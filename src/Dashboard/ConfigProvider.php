@@ -195,18 +195,9 @@ namespace Dashboard {
                 'exception_template'       => 'error/index',
 
                 'template_map' => [
-
-//                    'partial/form-head'         => __DIR__ . '/../../view/partial/form/header.phtml',
-//                    'partial/form-controls'     => __DIR__ . '/../../view/partial/form/footer.phtml',
-//                    'partial/upload'    => __DIR__ . '/../../view/partial/upload.phtml',
-//                    'partial/menu'      => __DIR__ . '/../../view/partial/menu.phtml',
-
-//                    'layout/dashboard'  => __DIR__ . '/../../view/layout/dashboard.phtml',
-//                    'layout/empty'      => __DIR__ . '/../../view/layout/empty.phtml',
-
-//                    'error/404'         => __DIR__ . '/../../view/error/404.phtml',
+                    'error/404'         => __DIR__ . '/../../view/error/404.phtml',
                     'error/index'       => __DIR__ . '/../../view/error/500.phtml',
-//                    'error/403'         => __DIR__ . '/../../view/error/403.phtml',
+                    'error/403'         => __DIR__ . '/../../view/error/403.phtml',
                 ],
 
                 'template_path_stack' => [

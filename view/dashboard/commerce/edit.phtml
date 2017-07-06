@@ -49,7 +49,7 @@ $cancel->setAttribute('class', 'btn btn-cancel')
     <?php echo $this->form()->openTag($form); ?>
     <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="x_panel">
-            <?php echo $this->render('partial/form/head', ['text' => 'General']); ?>
+            <?php echo $this->render('dashboard/partial/form/head', ['text' => 'General']); ?>
             <div class="x_content">
                 <?php foreach ($form as $e) : ?>
                     <?php if (!$e instanceof \Zend\Form\Fieldset): ?>
@@ -78,7 +78,7 @@ $cancel->setAttribute('class', 'btn btn-cancel')
     </div>
     <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="x_panel">
-            <?php echo $this->render('partial/form/head', ['text' => 'Files']); ?>
+            <?php echo $this->render('dashboard/partial/form/head', ['text' => 'Files']); ?>
             <div class="x_content">
                 <div id="dropzone">
                     <ul id="documentFiles" class="dropzone sortable-list">
