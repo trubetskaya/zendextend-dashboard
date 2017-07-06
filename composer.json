@@ -15,11 +15,15 @@
     "require": {
         "php": "^5.5 || ^7.0",
         "zendextend/zendextend": "*",
-
     },
     "autoload": {
         "psr-4": {
             "Dashboard\\": "src/Dashboard"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DashboardTest\\": "tests/DashboardTest",
         }
     },
     "extra": {
