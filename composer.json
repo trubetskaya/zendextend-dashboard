@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": "^5.5 || ^7.0",
-        "zendextend/zendextend": "*",
+        "zendextend/zendextend": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -23,7 +23,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "DashboardTest\\": "tests/DashboardTest",
+            "DashboardTest\\": "tests/DashboardTest"
         }
     },
     "extra": {
