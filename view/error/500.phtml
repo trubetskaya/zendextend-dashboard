@@ -1,0 +1,90 @@
+
+<!-- page content -->
+<div class="col-md-12">
+    <div class="col-middle">
+        <div class="text-center">
+            <h1 class="error-number">500</h1>
+            <h2>Internal Server Error</h2>
+            <p>We track these errors automatically, but if the problem persists feel free to contact us. In the
+                meantime, try refreshing. <a href="#">Report this?</a>
+            </p>
+            <div class="mid_center">
+                <h3>Search</h3>
+                <form>
+                    <div class="col-xs-12 form-group pull-right top_search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                              <button class="btn btn-default" type="button">Go!</button>
+                          </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1 class="error-number">500</h1>
+<h2>Internal Server Error</h2>
+<?php if (! empty($this->display_exceptions)) : ?>
+    <?php if (isset($this->exception)
+        && ($this->exception instanceof \Exception || $this->exception instanceof \Error)) : ?>
+        <hr/>
+
+        <h2>Additional information:</h2>
+        <h3><?= get_class($this->exception) ?></h3>
+        <dl>
+            <dt>File:</dt>
+            <dd>
+                <pre><?= $this->exception->getFile() ?>:<?= $this->exception->getLine() ?></pre>
+            </dd>
+            <dt>Message:</dt>
+            <dd>
+                <pre><?= $this->escapeHtml($this->exception->getMessage()) ?></pre>
+            </dd>
+            <dt>Stack trace:</dt>
+            <dd>
+                <pre><?= $this->escapeHtml($this->exception->getTraceAsString()) ?></pre>
+            </dd>
+        </dl>
+
+        <?php if ($ex = $this->exception->getPrevious()) : ?>
+            <hr/>
+
+            <h2>Previous exceptions:</h2>
+            <ul class="list-unstyled">
+                <?php $icount = 0 ?>
+                <?php while ($ex) : ?>
+                    <li>
+                        <h3><?= get_class($ex) ?></h3>
+                        <dl>
+                            <dt>File:</dt>
+                            <dd>
+                                <pre><?= $ex->getFile() ?>:<?= $ex->getLine() ?></pre>
+                            </dd>
+                            <dt>Message:</dt>
+                            <dd>
+                                <pre><?= $this->escapeHtml($ex->getMessage()) ?></pre>
+                            </dd>
+                            <dt>Stack trace:</dt>
+                            <dd>
+                                <pre><?= $this->escapeHtml($ex->getTraceAsString()) ?></pre>
+                            </dd>
+                        </dl>
+                    </li>
+                    <?php
+                    $ex = $ex->getPrevious();
+                    if (++$icount >= 50) {
+                        echo '<li>There may be more exceptions, but we do not have enough memory to process it.</li>';
+                        break;
+                    }
+                    ?>
+                <?php endwhile ?>
+            </ul>
+        <?php endif ?>
+    <?php else : ?>
+        <h3>No Exception available</h3>
+    <?php endif ?>
+<?php endif ?>
+<!-- /page content -->

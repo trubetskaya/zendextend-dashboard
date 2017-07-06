@@ -1,0 +1,302 @@
+<?php
+
+use Lib\Entity\Taxonomy;
+
+/** @var \Zend\View\Renderer\PhpRenderer $this */
+$this->headLink()
+    ->appendStylesheet('/dashboard/vendors/iCheck/skins/flat/green.css')
+    ->appendStylesheet('/dashboard/vendors/select2/dist/css/select2.min.css')
+    ->appendStylesheet('/dashboard/vendors/switchery/dist/switchery.min.css')
+    ->appendStylesheet('/dashboard/vendors/dropzone/dist/dropzone.css');
+
+$this->headScript()
+    ->appendFile('/dashboard/vendors/iCheck/icheck.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/moment/min/moment.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/bootstrap-daterangepicker/daterangepicker.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/jquery.tagsinput/src/jquery.tagsinput.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/switchery/dist/switchery.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/select2/dist/js/select2.full.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/parsleyjs/dist/parsley.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/autosize/dist/autosize.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js', 'text/javascript')
+    ->appendFile('/dashboard/vendors/dropzone/dist/dropzone.js', 'text/javascript');
+
+/** @var \Zend\Form\Form $form */
+$form->setAttribute("enctype", "multipart/form-data")
+    ->setAttribute('class', 'form-horizontal form-label-left')
+    ->setAttribute('action', $this->url('zfcadmin/dashboard', $routeParams))
+    ->setAttribute('id', 'document-form')
+    ->prepare();
+
+$form->get('taxonomy')->setOption('label_generator', function (Taxonomy $taxonomy) {
+    return $taxonomy->getRoot() ?
+        $taxonomy->getRoot()->getName() . " " . $taxonomy->getName() :
+        $taxonomy->getName();
+});
+
+$submit = new \Zend\Form\Element\Button('submit');
+$submit->setAttribute('class', 'btn btn-primary')
+    ->setAttribute('type', 'submit')
+    ->setLabel('Submit');
+
+$cancel = new \Zend\Form\Element\Button('cancel');
+$cancel->setAttribute('class', 'btn btn-cancel')
+    ->setAttribute('type', 'reset')
+    ->setValue('Cancel');
+?>
+
+<div class="row">
+    <?php echo $this->form()->openTag($form); ?>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <?php echo $this->render('partial/form/head', ['text' => 'General']); ?>
+            <div class="x_content">
+                <?php foreach ($form as $e) : ?>
+                    <?php if (!$e instanceof \Zend\Form\Fieldset): ?>
+                    <div class="form-group">
+                        <?php $e->setLabelAttributes(['class' => 'control-label col-md-3 col-sm-3 col-xs-3']); ?>
+                        <?php echo $this->formLabel($e);?>
+                        <div class="col-md-9 col-sm-9 col-xs-9">
+                            <?php echo $this->formElement($e); ?>
+                        </div>
+                    </div>
+                    <?php else : ?>
+                        <?php echo $this->formCollection($e); ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <div class="ln-solid"></div>
+                <div class="form-group">
+                    <div class="col-md-3 col-sm-3 col-xs-3"></div>
+                    <div class="col-md-9 col-sm-9 col-xs-9 form-controls">
+                        <?php echo $this->formButton($submit); ?>
+                        <?php echo $this->formReset($cancel); ?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <?php echo $this->render('partial/form/head', ['text' => 'Files']); ?>
+            <div class="x_content">
+                <div id="dropzone">
+                    <ul id="documentFiles" class="dropzone sortable-list">
+                        <li class="fallback">
+                            <input name="file" type="file" multiple="" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php echo $this->form()->closeTag(); ?>
+</div>
+
+<!-- Parsley -->
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var targetForm = $('form#document-form');
+        $('.btn.btn-primary', targetForm).on('click', function() {
+
+            targetForm.parsley().validate();
+            var warn = $('.bs-callout-warning'),
+                info = $('.bs-callout-info');
+
+            var valid = targetForm.parsley().isValid();
+            valid ? info.removeClass('hidden') : info.addClass('hidden');
+            valid ? warn.addClass('hidden') : warn.removeClass('hidden');
+        });
+
+        var disableControlElements = function (state) {
+            $('.form-group:last-child .btn', targetForm).attr('disabled', state)
+                .prop('disabled', state);
+        };
+
+        $(".select2_single").select2({
+            placeholder: "Select a state",
+            allowClear: true
+        });
+
+        $(".select2_multiple").select2({
+            maximumSelectionLength: 1,
+            placeholder: "With Max Selection limit 1",
+            allowClear: false
+        });
+
+        /*------ Dropzone Init ------*/
+        Dropzone.autoDiscover = false;
+        var dz = new Dropzone('form#document-form', {
+            clickable   : '#documentFiles',
+
+            // template settings
+            previewsContainer   : '#documentFiles',
+
+            // remove button
+            addRemoveLinks : true,
+            dictRemoveFile : '<?php echo $this->translate("Remove");?>',
+
+            // The configuration we've talked about above
+            autoProcessQueue: false,
+            uploadMultiple  : true,
+            parallelUploads : 100,
+            maxFiles        : 100,
+
+            init: function() {
+
+                // Dropzone instance
+                var _this = this;
+
+                // Max file index
+                _this.maxIndex = 0;
+
+                // Document form
+                var form = $(_this.element);
+
+                // Display uploaded files
+                var jqXHR = $.get('<?php echo $this->url('zfcadmin/dashboard', array_merge($routeParams, ['action' => 'get-files'])); ?>');
+                jqXHR.done(function(response, statusText, jqXHR) {
+                    console.info("Uploaded: ", response);
+                    if (response.data.files) {
+                        $.each(response.data.files, function(index, file) {
+                            _this.emit("addedfile", file);
+                            _this.emit("thumbnail", file, file.thumbnail);
+                            _this.emit("success", file, response);
+                            _this.emit("complete", file);
+
+                            _this.maxIndex = Math.max(_this.maxIndex, file.index);
+                            _this.files.push(file);
+                        });
+                    }
+                });
+
+                // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
+                // of the sending event because uploadMultiple is set to true.
+                this.on("sendingmultiple", function(files, xhr, formData) {
+                    $.each(files, function (i, file) {
+                        formData.append("attachment_" + i, file.index);
+                    });
+                });
+
+                this.on("successmultiple", function(files, response, xhr) {
+
+                    console.info("successmultiple: ", files);
+                    if (response.status == 'success') {
+                        $.each(files, function (i, file) {
+                            var item = response.data.files[file.index];
+                            if (item.status == 'success') {
+                                file.index = item.index;
+                                file.id = item.id;
+                            }
+
+                            _this.emit(item.status, file, item.message);
+                        });
+
+                        $(document).trigger("ajaxSuccess", [xhr, null, response]);
+                    }
+
+                    if (response.status == 'error') {
+                        _this.emit("errormultiple", files, response, xhr);
+                    }
+                });
+
+                this.on("errormultiple", function(files, response, xhr) {
+                    console.info("errormultiple: ", files);
+                    $(document).trigger("ajaxError", [xhr, null, response.data.message]);
+                    $.each(files, function(i, file) {
+                        var item = response.data.files[file.index];
+                        if (typeof(item) != 'undefined' ) {
+                            _this.emit("error", file, item.message);
+                        }
+                    });
+                });
+
+                // Multiple uploading complete
+                _this.on("completemultiple", function(files) {
+                    console.info("completemultiple: ", files);
+                    disableControlElements(false);
+                    $.each(files, function (i, file) {
+                        _this.maxIndex = Math.max(_this.maxIndex, file.index);
+                        $(file.previewElement).attr("id", file.index)
+                            .attr("data-rec-id", file.id)
+                            .data("id", file.index);
+                    });
+                });
+
+                // Adding file
+                _this.on("addedfile", function (file) {
+
+                    console.info("addedfile: ", file);
+
+                    file.active = 1;
+                    if (typeof(file.index) == "undefined") {
+                        file.index = ++_this.maxIndex;
+                    }
+
+                    if (!file.type.match(/image.*/)) {
+                        var ext = file.type.split("/").pop();
+                        if (!ext || ext.match(/\W/)) {
+                            ext = file.name.split(".").pop();
+                        }
+
+                        var thumb = "/img/cms/mime/" + ext + ".png";
+                        _this.emit("thumbnail", file, thumb);
+                    }
+                });
+
+                // Remove file
+                _this.on("removedfile", function(file) {
+                    console.info("removedfile: ", file);
+                    if (parseInt(file.id) > 0) {
+                        var jqXHR = $.post('/dashboard/commerce/remove-file', {id : file.id});
+                        jqXHR.done(function(response, textStatus, xhr) {
+//                            widget.sortable("refresh");
+                            if (typeof(response.data.hash)) {
+                                $('input[value="' + response.data.hash + '"]', form)
+                                    .closest('fieldset')
+                                    .remove();
+
+                                $('fieldset > fieldset > fieldset', form).each(function (index, item) {
+                                    $('input', item).each(function() {
+                                        this.name = this.name.replace(
+                                            new RegExp("(\[\\d+\])", "g"),
+                                            index
+                                        );
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        targetForm.parsley().on('form:submit', function (e) {
+
+            disableControlElements(true);
+            if (dz.getQueuedFiles().length > 0) {
+                dz.processQueue();
+                return false;
+            }
+
+            var jqXHR = $.ajax(targetForm.attr('action'), { data: targetForm.serialize(), type: "POST" });
+            jqXHR.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            jqXHR.always(function (response) {
+                disableControlElements(false);
+            });
+
+            return false;
+        });
+
+    });
+
+    try {
+        hljs.initHighlightingOnLoad();
+    } catch (err) {}
+
+</script>
+<!-- /Parsley -->
+
+

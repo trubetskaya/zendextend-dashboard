@@ -1,2 +1,2 @@
-# zendextend-dashboard
+# Dashboard module
 Zend Framework 3 dashboard module

@@ -1,0 +1,53 @@
+<?php
+/**
+ * @var \ZfcUser\Form\Login $form
+ * @var \Zend\Form\ElementInterface $element
+ * @var bool $enableRegistration
+ */
+?>
+<?php echo $this->form()->openTag($form) ?>
+
+    <h1><?php echo $this->translate('Login Form'); ?></h1>
+    <?php foreach ($form as $element) : ?>
+
+        <?php $element->setAttribute('class', 'form-control'); ?>
+        <?php if ($element->getLabel() != null && !$element instanceof Zend\Form\Element\Button) : ?>
+            <?php $element->setAttribute('placeholder', $element->getLabel()); ?>
+        <?php endif ?>
+
+        <?php if ($element instanceof Zend\Form\Element\Button) : ?>
+            <?php $element->setAttribute('class', 'btn btn-default submit')?>
+        <?php endif ?>
+
+        <div><?php echo $this->formElement($element) . $this->formElementErrors($element) ?></div>
+    <?php endforeach ?>
+    <div class="clearfix"></div>
+    <div class="separator">
+        <?php if ($enableRegistration) : ?>
+        <p class="change_link"><?php echo $this->translate('New to site?'); ?>&nbsp;
+            <a href="<?php echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->escapeUrl($this->redirect) : '') ?>" class="to_register">
+                <?php echo $this->translate('Create Account'); ?>
+            </a>
+        </p>
+
+        <div class="clearfix"></div>
+        <br />
+        <?php endif; ?>
+
+        <div>
+            <h1>
+                <i class="fa fa-paw"></i>
+                <?php echo $this->translate('Dashboard Interface'); ?>
+            </h1>
+            <p>
+                &copy;<?php echo date('Y'); ?>&nbsp;&dash;&nbsp;
+                <?php echo $this->translate('All Rights Reserved. Privacy and Terms'); ?>
+            </p>
+        </div>
+    </div>
+
+    <?php if ($this->redirect) : ?>
+        <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>">
+    <?php endif ?>
+
+<?php echo $this->form()->closeTag() ?>

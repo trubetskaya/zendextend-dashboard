@@ -1,0 +1,33 @@
+{
+    "name": "zendextend/zendextend-dashboard",
+    "description": "A generic Dashboard module for Zend Framework 3",
+    "license": "MIT",
+    "type": "module",
+    "keywords": ["zf3", "dashboard", "admin"],
+    "homepage": "https://github.com/atarasenkopublic/zendextend-dashboard",
+    "authors": [
+        {
+            "name": "Anton Tarasenko ",
+            "email": "tarasenko.anton@ukr.net",
+            "homepage": "https://github.com/atarasenkopublic"
+        }
+    ],
+    "require": {
+        "php": "^5.5 || ^7.0",
+        "zendextend/zendextend": "*",
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Dashboard\\": "src/Dashboard"
+        }
+    },
+    "extra": {
+        "zf": {
+            "component": "Dashboard",
+            "config-provider": [
+                "Dashboard\\ConfigProvider"
+            ]
+        }
+    }
+}

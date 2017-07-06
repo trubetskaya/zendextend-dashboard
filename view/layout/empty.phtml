@@ -1,0 +1,19 @@
+<?php echo $this->doctype(); ?>
+<html lang="en">
+  <head>
+      <?php echo $this->headTitle('Admin Interface')->setSeparator(' - ')->setAutoEscape(false) ?>
+      <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')
+          ->appendHttpEquiv('X-UA-Compatible', 'IE=edge'); ?>
+
+      <!-- Le styles -->
+      <?php echo $this->headLink()->prependStylesheet('/dashboard/build/css/custom.min.css')
+          ->prependStylesheet('/dashboard/vendors/animate.css/animate.min.css')
+          ->prependStylesheet('/dashboard/vendors/nprogress/nprogress.css')
+          ->prependStylesheet('/dashboard/vendors/font-awesome/css/font-awesome.min.css')
+          ->prependStylesheet('/dashboard/vendors/bootstrap/dist/css/bootstrap.min.css');?>
+    </head>
+
+    <body class="login">
+        <?php echo $this->content; ?>
+    </body>
+</html>

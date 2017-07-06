@@ -1,0 +1,25 @@
+<?php /** @var \Zend\View\Renderer\PhpRenderer $this */ ?>
+<ul class="nav side-menu">
+
+    <?php /** @var \Zend\Navigation\Page\AbstractPage $page */ ?>
+    <?php foreach ($this->container as $page) : ?>
+        <?php if ($this->navigation()->accept($page)) : ?>
+
+            <?php /** @var \Zend\View\Helper\Navigation\Menu $menu */ ?>
+            <?php $menu = $this->navigation()->menu(); ?>
+
+            <li <?php if ($page->getActive(true)) :?>class="<?php echo $menu->getLiActiveClass(); ?>"<?php endif; ?>>
+
+                <?php $clone = clone $page;?>
+                <?php echo $menu->htmlify($clone->setLabel($clone->ico . $clone->getLabel() . '<span class="fa fa-chevron-down"></span>'), false) . PHP_EOL;  ?>
+                <?php if ($page->hasPages()) : ?>
+                <ul class="nav child_menu">
+                    <?php foreach ($page->getPages() as $child) : ?>
+                        <li><?php echo $menu->htmlify($child, false) . PHP_EOL;  ?></li>
+                    <?php endforeach; ?>
+                </ul>
+                <?php endif; ?>
+            </li>
+    <?php endif; ?>
+<?php endforeach; ?>
+</ul>
