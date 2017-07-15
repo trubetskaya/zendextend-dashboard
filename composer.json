@@ -28,7 +28,7 @@
             "@install-npm-deps",
             "@link-public-vendors",
             "@copy-custom-static"
-        ],
+        ]
     },
     "autoload": {
         "psr-4": {
