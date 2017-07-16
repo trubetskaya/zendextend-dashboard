@@ -12,13 +12,13 @@
             "homepage": "https://github.com/atarasenkopublic"
         }
     ],
+
     "require": {
         "php": "^5.5 || ^7.0",
-        "zendextend/zendextend": "dev-master"
-    },
-    "require-dev": {
+        "zendextend/zendextend": "dev-master",
         "agusedyc/gentelella": "dev-master"
     },
+
     "scripts": {
         "install-npm-deps": "cd vendor/agusedyc/gentelella && npm install -V",
         "link-public-vendors": "cd public && rm -rf vendors && ln -s ../vendor/agusedyc/gentelella/vendors",
