@@ -19,17 +19,6 @@
         "agusedyc/gentelella": "dev-master"
     },
 
-    "scripts": {
-        "install-npm-deps": "cd vendor/agusedyc/gentelella && npm install -V",
-        "link-public-vendors": "cd public && rm -rf vendors && ln -s ../vendor/agusedyc/gentelella/vendors",
-        "copy-custom-static": "cp -rv vendor/agusedyc/gentelella/build/* public/dashboard",
-
-        "load-static": [
-            "@install-npm-deps",
-            "@link-public-vendors",
-            "@copy-custom-static"
-        ]
-    },
     "autoload": {
         "psr-4": {
             "Dashboard\\": "src/Dashboard"
@@ -47,5 +36,15 @@
                 "Dashboard\\ConfigProvider"
             ]
         }
+    },
+    "scripts": {
+        "install-npm-deps": "cd vendor/agusedyc/gentelella && npm install -V",
+        "link-public-vendors": "cd public && rm -rf vendors && ln -s ../vendor/agusedyc/gentelella/vendors",
+        "copy-custom-static": "cp -rv vendor/agusedyc/gentelella/build/* public/dashboard",
+        "post-install-cmd": [
+            "@install-npm-deps",
+            "@link-public-vendors",
+            "@copy-custom-static"
+        ]
     }
-}
+}1
